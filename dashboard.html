@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unique EcoTrack — Dashboard</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(120deg, #06B6D4, #10B981, #8B5CF6);
+      background-size: 600% 600%;
+      animation: gradientBG 12s ease infinite;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: transform 0.3s;
+    }
+    .glass-card:hover { transform: translateY(-4px); }
+
+    .fade-in { opacity: 0; animation: fadeIn 1s forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    canvas { background: rgba(255,255,255,0.1); border-radius: 16px; }
+
+  </style>
+</head>
+<body class="min-h-screen p-6">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center mb-6">
+    <div class="text-2xl font-bold">Unique EcoTrack</div>
+    <nav class="space-x-4">
+        <a href="dashboard.html" class="font-semibold hover:text-green-400">Dashboard</a>
+        <a href="input.html" class="hover:text-green-400">Input</a>
+        <a href="rewards.html" class="hover:text-green-400">Rewards</a>
+        <a href="scan.html" class="hover:text-green-400">Scan Product</a>
+        <a href="suggestions.html" class="hover:text-green-400">Suggestions</a>
+        <a href="family-leaderboard.html" class="hover:text-green-400">Family Leaderboard</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto space-y-6">
+
+    <!-- Stats Cards -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass-card p-6 text-center fade-in">
+        <div class="text-sm">This Month CO₂</div>
+        <div class="text-3xl font-bold text-green-400" id="this-month">0 kg</div>
+        <div class="text-xs mt-2 text-white/70">Updated via Input</div>
+      </div>
+      <div class="glass-card p-6 text-center fade-in" style="animation-delay: 0.2s">
+        <div class="text-sm">Last Month CO₂</div>
+        <div class="text-3xl font-bold text-green-400" id="last-month">0 kg</div>
+        <div class="text-xs mt-2 text-white/70">Previous usage</div>
+      </div>
+      <div class="glass-card p-6 text-center fade-in" style="animation-delay: 0.4s">
+        <div class="text-sm">Points</div>
+        <div class="text-3xl font-bold text-yellow-400" id="points">0</div>
+        <div class="text-xs mt-2 text-white/70">Earn points by reducing CO₂</div>
+      </div>
+    </div>
+
+    <!-- CO₂ Breakdown Chart -->
+    <div class="glass-card p-6 fade-in">
+      <h2 class="text-xl font-bold mb-4">CO₂ Breakdown</h2>
+      <canvas id="co2Chart" height="220"></canvas>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="glass-card p-6 fade-in">
+      <h2 class="text-xl font-bold mb-4">Quick Tips</h2>
+      <ul class="space-y-2">
+        <li>💡 Reduce electricity: switch to LEDs and unplug devices.</li>
+        <li>🚴‍♂️ Reduce travel: prefer public transport or cycling.</li>
+        <li>🛍 Sustainable shopping: choose durable, local products.</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <script>
+    // Fetch data from input.html via localStorage
+    const usageData = JSON.parse(localStorage.getItem('usageData')) || {
+      electricity: 20,
+      carKm: 15,
+      bikeKm: 0,
+      trainKm: 5,
+      flightKm: 8,
+      shoppingSpend: 2
+    };
+
+    // Multipliers for CO2 calculation
+    const multipliers = { electricity:0.82, car:0.2, bike:0, train:0.05, flight:0.25, shopping:0.005 };
+
+    // Prepare values for chart
+    const chartValues = [
+      usageData.electricity * multipliers.electricity,
+      usageData.carKm * multipliers.car,
+      usageData.bikeKm * multipliers.bike,
+      usageData.trainKm * multipliers.train,
+      usageData.flightKm * multipliers.flight,
+      usageData.shoppingSpend * multipliers.shopping
+    ];
+
+    // Animate stats numbers
+    function animateValue(el, start, end, duration=800) {
+      let startTime = null;
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime)/duration, 1);
+        el.textContent = (start + (end-start)*progress).toFixed(2) + (el.dataset.suffix || '');
+        if(progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    const totalCO2 = chartValues.reduce((a,b)=>a+b,0);
+    const thisMonthEl = document.getElementById('this-month');
+    const lastMonthEl = document.getElementById('last-month');
+    const pointsEl = document.getElementById('points');
+
+    animateValue(thisMonthEl, 0, totalCO2);
+    animateValue(lastMonthEl, 0, totalCO2); // could later be previous month
+    animateValue(pointsEl, 0, Math.round(totalCO2*5)); // simple point logic
+
+    // Render pie chart dynamically from input.html
+    const ctx = document.getElementById('co2Chart').getContext('2d');
+    const co2Chart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Electricity','Car','Bike','Train','Flight','Shopping'],
+        datasets: [{
+          data: chartValues.map(v => Number(v.toFixed(2))),
+          backgroundColor: ['#10B981','#06B6D4','#94A3B8','#60A5FA','#8B5CF6','#F97316']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom', labels: { color: 'white' } } }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unique EcoTrack — Rewards</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: linear-gradient(120deg, #06B6D4, #10B981, #8B5CF6);
+      background-size: 600% 600%;
+      animation: gradientBG 12s ease infinite;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: transform 0.3s;
+      padding: 1.5rem;
+    }
+
+    .glass-card:hover { transform: translateY(-4px); }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center mb-6">
+    <div class="text-2xl font-bold">Unique EcoTrack</div>
+    <nav class="space-x-4">
+      <a href="dashboard.html" class="font-semibold hover:text-green-400">Dashboard</a>
+      <a href="input.html" class="hover:text-green-400">Input</a>
+      <a href="rewards.html" class="hover:text-green-400">Rewards</a>
+      <a href="scan.html" class="hover:text-green-400">Scan Product</a>
+      <a href="suggestions.html" class="hover:text-green-400">Suggestions</a>
+      <a href="family-leaderboard.html" class="hover:text-green-400">Family Leaderboard</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto space-y-6">
+
+    <!-- Rewards Section -->
+    <div class="glass-card">
+      <h2 class="text-xl font-bold mb-4">Your Rewards</h2>
+      <p>🎉 Congrats! You have earned points by reducing your CO₂ footprint.</p>
+      <ul class="mt-4 list-disc ml-5 space-y-2">
+        <li>Redeem points for discounts at eco-friendly stores.</li>
+        <li>Unlock badges for sustainable actions.</li>
+        <li>Track your progress and compete with friends in fun challenges.</li>
+      </ul>
+    </div>
+
+    <!-- Other reward-related cards -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="glass-card">
+        <h3 class="font-semibold text-lg mb-2">Badge Collection</h3>
+        <p>Collect badges for every sustainable action you complete!</p>
+      </div>
+      <div class="glass-card">
+        <h3 class="font-semibold text-lg mb-2">Redeem Points</h3>
+        <p>Exchange your points for eco-friendly rewards and discounts.</p>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
