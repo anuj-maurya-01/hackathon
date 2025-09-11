@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack — Community</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+   body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ecfdf5, #e0f2fe, #f3e8ff);
+      min-height: 100vh;
+    }
+    .card { transition: transform 0.3s, box-shadow 0.3s; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-green-600 text-white p-6 flex justify-between items-center shadow-md">
+    <div class="text-2xl font-bold">EcoTrack Community</div>
+    <nav class="space-x-4">
+     <a href="dashboard.html" class="hover:underline">Dashboard</a>
+    <a href="rewards.html" class="hover:underline">Rewards</a>
+    <a href="scan.html" class="hover:underline">Scan Product</a>
+    <a href="suggestions.html" class="hover:underline">Suggestions</a>
+    <a href="marketplace.html" class="hover:underline">Marketplace</a>
+    <a href="community.html" class="hover:underline">Community</a>
+    <a href="carbon_credits.html" class="hover:underline">Carbon Credits</a>
+    <a href="family-leaderboard.html" class="hover:underline">Family Leaderboard</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto p-6 space-y-10">
+
+    <!-- Post New Eco-Action -->
+    <div class="card bg-white p-6 rounded-xl shadow">
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">Share Your Eco-Action</h2>
+      <div class="flex flex-col md:flex-row gap-4">
+        <input id="actionTitle" type="text" placeholder="Title of your action" class="p-2 border rounded flex-1">
+        <input id="actionDesc" type="text" placeholder="Short description" class="p-2 border rounded flex-2">
+        <button onclick="addAction()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Post</button>
+      </div>
+    </div>
+
+    <!-- Eco-Actions Feed -->
+    <div>
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">Community Feed</h2>
+      <div id="feed" class="space-y-4"></div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div>
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">Top Contributors</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card bg-white p-4 rounded-xl shadow text-center">
+          <h3 class="font-bold text-lg">Radhika</h3>
+          <p>Points: <span class="font-semibold text-green-600">120</span></p>
+          <p>Badges: 🌿🌟</p>
+        </div>
+        <div class="card bg-white p-4 rounded-xl shadow text-center">
+          <h3 class="font-bold text-lg">Avinash</h3>
+          <p>Points: <span class="font-semibold text-green-600">95</span></p>
+          <p>Badges: 🌿</p>
+        </div>
+        <div class="card bg-white p-4 rounded-xl shadow text-center">
+          <h3 class="font-bold text-lg">Himanshu</h3>
+          <p>Points: <span class="font-semibold text-green-600">80</span></p>
+          <p>Badges: 🌟</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const feed = document.getElementById('feed');
+    const actions = [];
+
+    function addAction() {
+      const title = document.getElementById('actionTitle').value.trim();
+      const desc = document.getElementById('actionDesc').value.trim();
+      if(!title || !desc) return alert("Please fill both fields!");
+
+      const action = { title, desc, time: new Date().toLocaleString() };
+      actions.unshift(action); // latest first
+      renderFeed();
+
+      document.getElementById('actionTitle').value = '';
+      document.getElementById('actionDesc').value = '';
+    }
+
+    function renderFeed() {
+      feed.innerHTML = '';
+      actions.forEach(act => {
+        const div = document.createElement('div');
+        div.className = 'card bg-white p-4 rounded-xl shadow';
+        div.innerHTML = `
+          <h3 class="font-bold text-lg text-gray-800 mb-1">${act.title}</h3>
+          <p class="text-gray-700 mb-2">${act.desc}</p>
+          <span class="text-gray-400 text-sm">Posted on ${act.time}</span>
+        `;
+        feed.appendChild(div);
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoTrack — Rewards</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ecfdf5, #e0f2fe, #f3e8ff);
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: transform .2s;
+    }
+    .card:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-green-600 text-white p-6 flex justify-between items-center shadow-md">
+    <div class="text-2xl font-bold">Unique EcoTrack</div>
+    <nav class="space-x-4">
+     <a href="dashboard.html" class="hover:underline">Dashboard</a>
+    <a href="rewards.html" class="hover:underline">Rewards</a>
+    <a href="scan.html" class="hover:underline">Scan Product</a>
+    <a href="suggestions.html" class="hover:underline">Suggestions</a>
+    <a href="marketplace.html" class="hover:underline">Marketplace</a>
+    <a href="community.html" class="hover:underline">Community</a>
+    <a href="carbon_credits.html" class="hover:underline">Carbon Credits</a>
+    <a href="family-leaderboard.html" class="hover:underline">Family Leaderboard</a>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto p-6 space-y-10">
+
+    <!-- Points -->
+    <div class="card text-center">
+      <h2 class="text-xl font-semibold mb-2">Your Eco Points</h2>
+      <div class="text-4xl font-bold text-green-600">420 🌱</div>
+      <p class="text-gray-500 mt-2">Earn more points by reducing CO₂ emissions</p>
+    </div>
+
+    <!-- Rewards -->
+    <div>
+      <h2 class="text-lg font-semibold mb-4">Available Rewards</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card text-center">
+          <h3 class="font-semibold">🌍 Tree Plantation</h3>
+          <p class="text-sm text-gray-500 mt-1">Plant a real tree for 200 points</p>
+          <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Redeem</button>
+        </div>
+        <div class="card text-center">
+          <h3 class="font-semibold">♻️ Eco Merchandise</h3>
+          <p class="text-sm text-gray-500 mt-1">Reusable bottle / tote bag — 350 points</p>
+          <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Redeem</button>
+        </div>
+        <div class="card text-center">
+          <h3 class="font-semibold">🎟 Eco Event Pass</h3>
+          <p class="text-sm text-gray-500 mt-1">Attend green workshops — 500 points</p>
+          <button class="mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Redeem</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Challenges -->
+    <div>
+      <h2 class="text-lg font-semibold mb-4">Weekly Challenges</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card">
+          <h3 class="font-semibold">🚴 Cycle to Work</h3>
+          <p class="text-gray-500 mt-1">Complete 5 days this week to earn +100 points</p>
+          <button class="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Join Challenge</button>
+        </div>
+        <div class="card">
+          <h3 class="font-semibold">💡 Energy Saver</h3>
+          <p class="text-gray-500 mt-1">Reduce electricity by 10% to earn +80 points</p>
+          <button class="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Join Challenge</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificates -->
+    <div>
+      <h2 class="text-lg font-semibold mb-4">Your Certificates</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card flex items-center space-x-4">
+          <div class="text-4xl">🏆</div>
+          <div>
+            <h3 class="font-semibold">Carbon Saver — Bronze</h3>
+            <p class="text-sm text-gray-500">Earned for saving 50kg CO₂</p>
+          </div>
+        </div>
+        <div class="card flex items-center space-x-4">
+          <div class="text-4xl">🥇</div>
+          <div>
+            <h3 class="font-semibold">Green Champion</h3>
+            <p class="text-sm text-gray-500">Awarded for completing 3 challenges</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>
