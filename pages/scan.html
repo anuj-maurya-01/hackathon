@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSphere — Scan Product</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ecfdf5, #e0f2fe, #f3e8ff);
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: transform .2s;
+    }
+    .card:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Header -->
+ <header class="bg-green-600 text-white p-6 flex justify-between items-center shadow-md">
+    <div class="text-2xl font-bold">EcoSphere</div>
+    <nav class="space-x-4">
+     <a href="dashboard.html" class="hover:underline">Dashboard</a>
+    <a href="rewards.html" class="hover:underline">Rewards</a>
+    <a href="scan.html" class="hover:underline">Scan Product</a>
+    <a href="suggestions.html" class="hover:underline">Suggestions</a>
+    <a href="marketplace.html" class="hover:underline">Marketplace</a>
+    <a href="community.html" class="hover:underline">Community</a>
+    <a href="carbon_credits.html" class="hover:underline">Carbon Credits</a>
+    <a href="family-leaderboard.html" class="hover:underline">Family Leaderboard</a>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto p-6 space-y-8">
+
+    <!-- Scan Card -->
+    <div class="card text-center">
+      <h2 class="text-xl font-semibold mb-4">Scan a Product</h2>
+      <p class="text-gray-500 mb-4">Enter product code or upload an image to simulate scan</p>
+
+      <div class="flex justify-center gap-2 mb-4">
+        <input id="productCode" type="text" placeholder="e.g. P1001" class="border rounded px-3 py-2 w-60" />
+        <button onclick="lookupProduct(document.getElementById('productCode').value)" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+          Lookup
+        </button>
+      </div>
+
+      <input type="file" accept="image/*" class="mb-4" onchange="simulateScan()" />
+      <button onclick="simulateScan()" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-900">
+        Simulate Scan
+      </button>
+    </div>
+
+    <!-- Results -->
+    <div id="scan-result" class="hidden space-y-6">
+
+      <!-- Product Info -->
+      <div class="card">
+        <h3 class="text-lg font-semibold mb-2">📦 Product Details</h3>
+        <p><span class="font-semibold">Name:</span> <span id="scan-product-name">-</span></p>
+        <p><span class="font-semibold">Carbon Impact:</span> <span id="scan-product-co2">-</span></p>
+        <p><span class="font-semibold">Description:</span> <span id="scan-product-desc">-</span></p>
+      </div>
+
+      <!-- Eco Score -->
+      <div class="card">
+        <h3 class="text-lg font-semibold mb-2">🌱 Eco Score</h3>
+        <div id="eco-score" class="text-xl font-bold text-green-600">-</div>
+        <p class="text-gray-500 text-sm mt-1">Lower CO₂ = Higher Eco Score</p>
+      </div>
+
+      <!-- Alternatives -->
+      <div class="card">
+        <h3 class="text-lg font-semibold mb-2">♻ Suggested Alternatives</h3>
+        <ul id="alternatives" class="list-disc pl-6 text-gray-700"></ul>
+      </div>
+
+      <!-- Badges -->
+      <div class="card">
+        <h3 class="text-lg font-semibold mb-2">🏅 Achievements</h3>
+        <p id="badges" class="text-gray-700">Scan more eco-friendly items to unlock badges!</p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // Sample product database
+    const productDB = {
+      "P1001": { 
+        name: "EcoFresh Water Bottle", 
+        co2: 12.5, 
+        desc: "Reusable plastic bottle with medium carbon impact.", 
+        alternatives: ["Stainless Steel Flask", "Glass Bottle"]
+      },
+      "P2001": { 
+        name: "Stainless Steel Flask", 
+        co2: 2.1, 
+        desc: "Durable steel flask with low environmental impact.", 
+        alternatives: ["Bamboo Cup", "Recycled Glass Bottle"]
+      },
+      "P3001": { 
+        name: "Bamboo Coffee Cup", 
+        co2: 0.9, 
+        desc: "Eco-friendly bamboo alternative to disposable cups.", 
+        alternatives: ["Clay Cup", "Reusable Ceramic Mug"]
+      }
+    };
+
+    function lookupProduct(code) {
+      const sr = document.getElementById('scan-result');
+      if (!code) return alert('Enter a product code or upload an image!');
+      const prod = productDB[code.toUpperCase()];
+      if (!prod) return alert('Product not found! Try P1001, P2001, P3001.');
+
+      document.getElementById('scan-product-name').textContent = prod.name;
+      document.getElementById('scan-product-co2').textContent = prod.co2 + ' kg CO₂';
+      document.getElementById('scan-product-desc').textContent = prod.desc;
+
+      // Eco Score calculation (lower CO₂ = higher score)
+      const ecoScore = Math.max(0, 100 - Math.floor(prod.co2 * 5));
+      document.getElementById('eco-score').textContent = ecoScore + "/100";
+
+      // Alternatives
+      const altList = document.getElementById('alternatives');
+      altList.innerHTML = "";
+      prod.alternatives.forEach(a => {
+        const li = document.createElement("li");
+        li.textContent = a;
+        altList.appendChild(li);
+      });
+
+      // Badges
+      const badges = document.getElementById("badges");
+      if (ecoScore >= 90) {
+        badges.textContent = "🌟 Eco Hero: You picked an ultra-sustainable product!";
+      } else if (ecoScore >= 70) {
+        badges.textContent = "🌿 Eco Friendly: Good sustainable choice!";
+      } else {
+        badges.textContent = "⚠ Try greener alternatives for a better impact!";
+      }
+
+      sr.classList.remove("hidden");
+    }
+
+    function simulateScan() {
+      const keys = Object.keys(productDB);
+      const randomCode = keys[Math.floor(Math.random() * keys.length)];
+      lookupProduct(randomCode);
+    }
+  </script>
+  <footer class="bg-green-700 text-white text-center py-6 mt-12">
+    <p>© 2025 EcoSphere. All rights reserved.</p>
+  </footer>
+</body>
+</html>
+

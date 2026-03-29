@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSphere — Family Leaderboard</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ecfdf5, #e0f2fe, #f3e8ff);
+      min-height: 100vh;
+    }
+    .card { background: white; border-radius: 16px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: transform 0.3s;}
+    .card:hover { transform: translateY(-4px); }
+  </style>
+</head>
+<body class="p-6">
+
+  <header class="bg-green-600 text-white p-6 flex justify-between items-center shadow-md">
+    <div class="text-2xl font-bold">EcoSphere</div>
+    <nav class="space-x-4">
+     <a href="dashboard.html" class="hover:underline">Dashboard</a>
+    <a href="rewards.html" class="hover:underline">Rewards</a>
+    <a href="scan.html" class="hover:underline">Scan Product</a>
+    <a href="suggestions.html" class="hover:underline">Suggestions</a>
+    <a href="marketplace.html" class="hover:underline">Marketplace</a>
+    <a href="community.html" class="hover:underline">Community</a>
+    <a href="carbon_credits.html" class="hover:underline">Carbon Credits</a>
+    <a href="family-leaderboard.html" class="hover:underline">Family Leaderboard</a>
+    </nav>
+  </header>
+  <!-- Add Member CO₂ -->
+  <div class="card mb-6">
+    <h2 class="text-xl font-bold mb-4">Add Family Member Emission</h2>
+    <div class="flex gap-4 flex-wrap">
+      <input type="text" id="memberName" placeholder="Member Name" class="p-2 border rounded flex-1">
+      <input type="number" id="memberCO2" placeholder="CO₂ (kg)" class="p-2 border rounded flex-1">
+      <button onclick="addMember()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Add Member</button>
+    </div>
+  </div>
+
+  <!-- Members Table -->
+  <div class="card mb-6">
+    <h2 class="text-xl font-bold mb-4">Family Members</h2>
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr>
+          <th class="border-b p-2">Member</th>
+          <th class="border-b p-2">CO₂ Emission (kg)</th>
+          <th class="border-b p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody id="memberTable"></tbody>
+    </table>
+    <div class="mt-4 font-bold text-lg" id="totalCO2">Total CO₂: 0 kg</div>
+  </div>
+
+  <!-- Pie Chart -->
+  <div class="card">
+    <h2 class="text-xl font-bold mb-4">CO₂ Distribution</h2>
+    <canvas id="memberChart" height="200"></canvas>
+  </div>
+
+  <script>
+    const members = []; // Start empty
+    const memberTable = document.getElementById('memberTable');
+
+    function renderTable() {
+      memberTable.innerHTML = '';
+      let total = 0;
+      members.forEach((m, i) => {
+        total += m.co2;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="border-b p-2">${m.name}</td>
+          <td class="border-b p-2">${m.co2} kg</td>
+          <td class="border-b p-2">
+            <button onclick="deleteMember(${i})" class="text-red-600 hover:underline">Delete</button>
+          </td>
+        `;
+        memberTable.appendChild(tr);
+      });
+      document.getElementById('totalCO2').textContent = "Total CO₂: " + total.toFixed(2) + " kg";
+    }
+
+    function addMember() {
+      const name = document.getElementById('memberName').value.trim();
+      const co2 = parseFloat(document.getElementById('memberCO2').value);
+      if(!name || !co2 || co2 <= 0) return alert("Enter valid member name and CO₂!");
+      members.push({ name, co2 });
+      document.getElementById('memberName').value = '';
+      document.getElementById('memberCO2').value = '';
+      renderTable();
+      updateChart();
+    }
+
+    function deleteMember(index) {
+      members.splice(index, 1);
+      renderTable();
+      updateChart();
+    }
+
+    // Chart.js
+    const ctx = document.getElementById('memberChart').getContext('2d');
+    const memberChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: []
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        responsive: true
+      }
+    });
+
+    function updateChart() {
+      memberChart.data.labels = members.map(m => m.name);
+      memberChart.data.datasets[0].data = members.map(m => m.co2);
+      memberChart.data.datasets[0].backgroundColor = members.map((_, i) => 
+        ['#10B981','#06B6D4','#FBBF24','#F97316','#8B5CF6','#EC4899','#3B82F6','#EF4444','#F59E0B'][i % 9]
+      );
+      memberChart.update();
+    }
+
+    renderTable();
+    updateChart();
+  </script>
+<footer class="bg-green-700 text-white text-center py-6 mt-12">
+    <p>© 2025 EcoSphere. All rights reserved.</p>
+  </footer>
+</body>
+</html>
+
+

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSphere — Login</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top left, #06B6D4, #3B82F6, #8B5CF6);
+      background-size: 200% 200%;
+      animation: gradientMove 12s ease infinite;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    canvas#particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+      z-index: 1;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .input-box {
+      position: relative;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      outline: none;
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #111;
+      transition: 0.3s;
+    }
+
+    .input-box input:focus {
+      box-shadow: 0 0 8px #10B981;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      background: linear-gradient(90deg,#06B6D4,#10B981,#8B5CF6);
+      background-size: 200% auto;
+      color: white;
+    }
+
+    .btn:hover {
+      background-position: right center;
+      transform: scale(1.05);
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px;
+      margin-top: 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      border: none;
+    }
+
+    .google { background: #fff; color: #111; }
+    .google:hover { background: #f0f0f0; }
+
+    .github { background: #111; color: #fff; }
+    .github:hover { background: #333; }
+
+    .linkedin { background: #0077b5; color: #fff; }
+    .linkedin:hover { background: #005582; }
+  </style>
+</head>
+<body>
+
+  <!-- Particle Background -->
+  <canvas id="particles"></canvas>
+
+  <!-- Login Card -->
+  <div class="glass-card">
+    <h2 class="text-2xl font-bold text-center mb-6 text-white">EcoSphere</h2>
+    <h5 class="text-lg font-medium text-center mb-6 text-white/90">Your Personal Carbon Accountant</h5>
+    <form onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
+      <div class="input-box">
+        <input type="email" placeholder="Email" required>
+      </div>
+      <div class="input-box">
+        <input type="password" placeholder="Password" required>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <!-- Divider -->
+    <div class="flex items-center my-4">
+      <hr class="flex-1 border-gray-400/40">
+      <span class="px-3 text-white/70 text-sm">OR</span>
+      <hr class="flex-1 border-gray-400/40">
+    </div>
+
+    <!-- Social Login Buttons -->
+    <button class="social-btn google">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="20"/> 
+      Continue with Google
+    </button>
+    <p class="text-center text-white/80 mt-4 text-sm">
+      Don’t have an account? <a href="#" class="text-green-300 hover:underline">Sign up</a>
+    </p>
+  </div>
+
+  <script>
+    // Particle Background Animation
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 3 + 1;
+        this.dx = (Math.random() - 0.5) * 1.2;
+        this.dy = (Math.random() - 0.5) * 1.2;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.7)";
+        ctx.fill();
+      }
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        if(this.x < 0 || this.x > canvas.width) this.dx *= -1;
+        if(this.y < 0 || this.y > canvas.height) this.dy *= -1;
+        this.draw();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for(let i=0; i<80; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p => p.update());
+      requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    });
+  </script>
+</body>
+</html>
+
